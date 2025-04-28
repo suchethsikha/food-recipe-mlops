@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+pillow
+ultralytics
+mlflow
+jinja2
+python-multipart

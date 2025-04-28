@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Ingredient Detector</title>
+</head>
+<body>
+    <h1>Upload a Food Image</h1>
+    <form action="/predict" enctype="multipart/form-data" method="post">
+        <input name="file" type="file">
+        <input type="submit" value="Predict">
+    </form>
+
+    {% if predictions %}
+    <h2>Predictions:</h2>
+    <ul>
+        {% for label, confidence in predictions %}
+            <li>{{ label }} ({{ '{:.2f}'.format(confidence * 100) }}% confidence)</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</body>
+</html>
