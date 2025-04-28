@@ -134,13 +134,13 @@ Visit the application at: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 ---
 
-## 🔥 Future Improvements
+## 🔥 Stuff to do 
 
-- Draw bounding boxes on the uploaded image.
-- Recommend recipes based on detected ingredients.
-- Add a cuisine selector (e.g., Indian, Keto, Vegan).
-- Deploy to GCP with a custom domain and SSL (production-ready version).
-- Add logging, monitoring, and alerts.
+- Add a LLM either just to generate recipies/ to act as a chatbot.
+- Check and update model to perfect inferences -- local 
+- Run with ML flow running in GCP to track model training. Already have a sample ML Flow server running in GCP, will need to change URI. Quick win.
+- Check how to host the entire infrastructure since it's all local, do we move it to GCP, metaflow etc.
+- Currently the dataset is from RoboFlow
 
 ---
 
