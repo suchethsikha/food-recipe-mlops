@@ -55,7 +55,7 @@ cd food-recipe-mlops
 It is recommended to create a fresh environment:
 
 ```bash
-conda create -n fooddetector python=3.10
+conda create -n fooddetector python=3.12.10
 conda activate fooddetector
 pip install -r requirements.txt
 ```
@@ -134,13 +134,14 @@ Visit the application at: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 ---
 
-## 🔥 Stuff to do 
+## 🔥 Stuff to do / Task list
 
 - Add a LLM either just to generate recipies/ to act as a chatbot.
 - Check and update model to perfect inferences -- local 
 - Run with ML flow running in GCP to track model training. Already have a sample ML Flow server running in GCP, will need to change URI. Quick win.
 - Check how to host the entire infrastructure since it's all local, do we move it to GCP, metaflow etc.
-- Currently the dataset is from RoboFlow
+- Currently the dataset is from RoboFlow.
+- Training.py is updated but not logged properly in ML . 2 epochs take around 8 hours to run, will have to rerun sometime overnight.
 
 ---
 
