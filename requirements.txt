@@ -5,3 +5,5 @@ ultralytics
 mlflow
 jinja2
 python-multipart
+python-dotenv
+google-genai
