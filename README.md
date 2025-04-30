@@ -108,6 +108,76 @@ Visit the application at: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 ---
 
+
+Here’s a sample `README.md` that explains exactly how to set up and run your Vertex AI + Gemini script using a service account:
+
+---
+
+# 🍳 Gemini Recipe Generator with Vertex AI
+
+This project uses Google Cloud's Vertex AI Gemini API to generate Michelin-level recipes based on a list of detected ingredients.
+
+---
+
+## 🔧 Prerequisites
+
+- A Google Cloud project with **Vertex AI API enabled**
+- Python 3.8+
+- `pip` package manager
+- Access to create and download a **Service Account JSON key**
+
+
+---
+
+## 🔐 Set Up Google Cloud Authentication
+
+1. **Create a service account and download its key:**
+   - Go to [Google Cloud Console – IAM & Admin > Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts)
+   - Create or select a service account.
+   - Grant it the **Vertex AI User** role.
+   - Click **“Create Key”** → Select **JSON** → Download the file.
+   - Save it somewhere safe on your local machine.
+
+---
+
+2. **Set the required environment variables in your terminal** before running the script:
+
+   ```bash
+   export GOOGLE_CLOUD_PROJECT=your-gcp-project-id
+   export GOOGLE_CLOUD_LOCATION=your-region  # e.g. us-central1
+   export GOOGLE_APPLICATION_CREDENTIALS=/absolute/path/to/your/service-account-key.json
+   ```
+
+   Example:
+   ```bash
+   export GOOGLE_CLOUD_PROJECT=my-genai-project
+   export GOOGLE_CLOUD_LOCATION=us-west2
+   export GOOGLE_APPLICATION_CREDENTIALS=/Users/you/keys/genai-service-account.json
+   ```
+
+   > 💡 You must run these `export` commands **in the same terminal session** where you'll execute the Python script, or add them to your shell profile (e.g., `~/.bashrc` or `~/.zshrc`) to make them permanent.
+
+---
+
+## 🚀 Run the Script
+
+```bash
+python main.py
+```
+
+---
+
+## 🛠 Troubleshooting
+
+- If you get an error about authentication or credentials:
+  - Double check the path to your `.json` key file
+  - Make sure you ran `load_dotenv()` in your script
+  - Confirm the `GOOGLE_APPLICATION_CREDENTIALS` path is absolute, not relative
+- Ensure the Gemini model you’re calling (`gemini-2.0-flash-001`) is available in your selected region
+
+---
+
+
 ## 🧠 Key Features
 
 - **Transfer Learning on YOLOv8**: Fast and accurate ingredient detection.
