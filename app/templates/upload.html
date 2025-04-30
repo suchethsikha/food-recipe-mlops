@@ -1,22 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Food Ingredient Detector</title>
+    <meta charset="utf-8">
+    <title>Food Ingredient Detector &amp; Recipe Recommender</title>
 </head>
 <body>
-    <h1>Upload a Food Image</h1>
-    <form action="/predict" enctype="multipart/form-data" method="post">
-        <input name="file" type="file">
-        <input type="submit" value="Predict">
+    <h1>Food Ingredient Detector &amp; Recipe Recommender</h1>
+
+    <form id="upload-form" action="/predict" enctype="multipart/form-data" method="post">
+        <input name="file" type="file" accept="image/*" required>
+        <input type="submit" value="Detect Ingredients">
     </form>
 
     {% if predictions %}
-    <h2>Predictions:</h2>
-    <ul>
+    <h2>Detected Ingredients:</h2>
+    <ul id="prediction-list">
         {% for label, confidence in predictions %}
             <li>{{ label }} ({{ '{:.2f}'.format(confidence * 100) }}% confidence)</li>
         {% endfor %}
     </ul>
+
+    <script>
+    // Save the detected labels so we can send them to /recommend
+    window.lastIngredients = [
+        {% for label, confidence in predictions %}
+            "{{ label }}"{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+    </script>
+
+    <button id="recommend">Get Recipes</button>
     {% endif %}
+
+    <h2>Recipes</h2>
+    <pre id="recipes" style="white-space: pre-wrap;"></pre>
+
+    <script>
+    document.getElementById('recommend')?.addEventListener('click', async () => {
+        const ings = window.lastIngredients || [];
+        if (ings.length === 0) {
+            alert('Please detect ingredients first!');
+            return;
+        }
+
+        try {
+            const res = await fetch('/recommend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(ings)
+            });
+            if (!res.ok) throw new Error(`Status ${res.status}`);
+            const data = await res.json();
+            document.getElementById('recipes').textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+            console.error(err);
+            alert('Failed to fetch recipes. See console for details.');
+        }
+    });
+    </script>
 </body>
 </html>
