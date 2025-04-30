@@ -3,6 +3,13 @@
 <head>
     <meta charset="utf-8">
     <title>Food Ingredient Detector &amp; Recipe Recommender</title>
+    <style>
+      table { border-collapse: collapse; width: 100%; margin-top: 1em; }
+      th, td { border: 1px solid #ccc; padding: 0.5em; text-align: left; vertical-align: top; }
+      th { background: #f4f4f4; }
+      ul, ol { margin: 0; padding-left: 1.2em; }
+      .recipe-table { margin-bottom: 2em; }
+    </style>
 </head>
 <body>
     <h1>Food Ingredient Detector &amp; Recipe Recommender</h1>
@@ -21,27 +28,35 @@
     </ul>
 
     <script>
-    // Save the detected labels so we can send them to /recommend
     window.lastIngredients = [
         {% for label, confidence in predictions %}
             "{{ label }}"{% if not loop.last %},{% endif %}
         {% endfor %}
     ];
     </script>
-
     <button id="recommend">Get Recipes</button>
+    <span id="loading" style="display:none; margin-left:1em;">Loading…</span>
     {% endif %}
 
     <h2>Recipes</h2>
-    <pre id="recipes" style="white-space: pre-wrap;"></pre>
+    <div id="recipes"></div>
 
     <script>
-    document.getElementById('recommend')?.addEventListener('click', async () => {
+    const btn = document.getElementById('recommend');
+    const loader = document.getElementById('loading');
+    const container = document.getElementById('recipes');
+
+    btn?.addEventListener('click', async () => {
         const ings = window.lastIngredients || [];
-        if (ings.length === 0) {
+        if (!ings.length) {
             alert('Please detect ingredients first!');
             return;
         }
+
+        // show loader + disable button
+        loader.style.display = 'inline';
+        btn.disabled = true;
+        container.innerHTML = '';  // clear previous
 
         try {
             const res = await fetch('/recommend', {
@@ -50,11 +65,39 @@
                 body: JSON.stringify(ings)
             });
             if (!res.ok) throw new Error(`Status ${res.status}`);
-            const data = await res.json();
-            document.getElementById('recipes').textContent = JSON.stringify(data, null, 2);
+            const { recipes } = await res.json();
+
+            if (!recipes || recipes.length === 0) {
+                container.textContent = 'No recipes found.';
+            } else {
+                // Build table
+                const table = document.createElement('table');
+                table.classList.add('recipe-table');
+                table.innerHTML = `
+                  <thead>
+                    <tr>
+                      <th>Name</th><th>Ingredients</th><th>Steps</th><th>Time (min)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${recipes.map(r => `
+                      <tr>
+                        <td>${r.name}</td>
+                        <td><ul>${r.ingredients.map(i => `<li>${i}</li>`).join('')}</ul></td>
+                        <td><ol>${r.steps.map(s => `<li>${s}</li>`).join('')}</ol></td>
+                        <td>${r.time_minutes}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>`;
+                container.appendChild(table);
+            }
         } catch (err) {
             console.error(err);
             alert('Failed to fetch recipes. See console for details.');
+        } finally {
+            // hide loader + re-enable button
+            loader.style.display = 'none';
+            btn.disabled = false;
         }
     });
     </script>
