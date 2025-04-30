@@ -113,13 +113,13 @@ Here’s a sample `README.md` that explains exactly how to set up and run your V
 
 ---
 
-# 🍳 Gemini Recipe Generator with Vertex AI
+## Gemini Recipe Generator with Vertex AI
 
 This project uses Google Cloud's Vertex AI Gemini API to generate Michelin-level recipes based on a list of detected ingredients.
 
 ---
 
-## 🔧 Prerequisites
+### Prerequisites
 
 - A Google Cloud project with **Vertex AI API enabled**
 - Python 3.8+
@@ -129,7 +129,7 @@ This project uses Google Cloud's Vertex AI Gemini API to generate Michelin-level
 
 ---
 
-## 🔐 Set Up Google Cloud Authentication
+### Set Up Google Cloud Authentication
 
 1. **Create a service account and download its key:**
    - Go to [Google Cloud Console – IAM & Admin > Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts)
@@ -159,15 +159,9 @@ This project uses Google Cloud's Vertex AI Gemini API to generate Michelin-level
 
 ---
 
-## 🚀 Run the Script
 
-```bash
-python main.py
-```
 
----
-
-## 🛠 Troubleshooting
+### 🛠 Troubleshooting
 
 - If you get an error about authentication or credentials:
   - Double check the path to your `.json` key file
