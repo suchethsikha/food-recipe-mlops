@@ -6,13 +6,16 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Food Ingredient Detector & Recipe Recommender</h1>
+    <h1>Food Ingredient Detector & Recipe Recommender</h1> 
 
+   
     <form id="upload-form" action="/predict" enctype="multipart/form-data" method="post">
-        <label for="file-upload" class="custom-file-upload">Choose Image</label>
-        <input id="file-upload" name="file" type="file" accept="image/*" required>
+        <label for="file-upload" class="custom-file-upload">Choose Images</label>
+        <input id="file-upload" name="files" type="file" accept="image/*" multiple required>
         <input type="submit" value="Detect Ingredients">
-    </form>
+    </form> 
+
+    
 
     {% if predictions %}
     <h2>Detected Ingredients:</h2>
@@ -94,4 +97,4 @@
     });
     </script>
 </body>
-</html>
+</html> 

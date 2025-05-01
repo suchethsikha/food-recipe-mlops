@@ -47,22 +47,3 @@ def generate_recipes(detected: list[str]) -> dict:
 
 
 
-    # Start or resume a run so logs appear in MLflow
-   # with mlflow.start_run(nested=True) as run:
-    #    mlflow.set_tag("llm.provider", "vertexai-gemini-2.0-flash-001")
-     #   mlflow.log_text(prompt, "llm_prompt.txt")
-#
- #       try:
-  #          response = _client.models.generate_content(
-   #             model="gemini-2.0-flash-001",
-    #            contents=prompt
-     #       )
-      #      raw = response.text.strip()
-       #     mlflow.log_text(raw, "llm_response.json")
-        #    recipes = json.loads(raw)
-#        except Exception as e:
-#            logging.error("Vertex AI parse error", exc_info=True)
-#            mlflow.log_text(str(e), "llm_error.txt")
-#            recipes = {"recipes": []}
-
-#    return recipes

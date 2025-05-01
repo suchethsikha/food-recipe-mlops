@@ -1,32 +1,43 @@
-# app/main.py
-
+from typing import List
 from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+
+
+
 
 from app.predictor import predict_image
 from app.llm_recommender_vertex import generate_recipes
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    # Render the upload page with no predictions yet
     return templates.TemplateResponse("upload.html", {"request": request})
 
-@app.post("/predict")
-async def predict(request: Request, file: UploadFile = File(...)):
-    # Read the uploaded image and run YOLO detection
-    contents = await file.read()
-    predictions = predict_image(contents)  # e.g. ["Tomato", "Lettuce", "Onion"]
 
-    # Re-render the same template, passing in the detected ingredients
+@app.post("/predict")
+async def predict(request: Request, files: List[UploadFile] = File(...)):
+    top_predictions = []
+    print(request)
+
+    for file in files:
+        contents = await file.read()
+        predictions = predict_image(contents)
+
+        if predictions:
+            # Select the one with the highest confidence
+            top_prediction = max(predictions, key=lambda x: x[1])
+            top_predictions.append(top_prediction)
+
     return templates.TemplateResponse("upload.html", {
         "request": request,
-        "predictions": predictions
+        "predictions": top_predictions
     })
-
 @app.post("/recommend")
 async def recommend(ingredients: list[str]):
     """
@@ -35,3 +46,4 @@ async def recommend(ingredients: list[str]):
     """
     recipes = generate_recipes(ingredients)
     return JSONResponse(content=recipes)
+

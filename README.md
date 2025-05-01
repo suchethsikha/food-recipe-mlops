@@ -30,6 +30,7 @@ food-recipe-mlops/
 │   ├── predictor.py         # Run prediction on uploaded image
 │   ├── templates/           # Frontend (HTML)
 │   │   └── upload.html
+│   ├── llm_recommender_vertex.py
 │   └── static/              # (Optional) CSS/JS for styling
 ├── training/                # Training code
 │   ├── train.py             # Train YOLO model, log to MLflow
