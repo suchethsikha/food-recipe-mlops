@@ -2,7 +2,7 @@
 This project uses a **YOLOv8 object detection model** trained on food/ingredient images to:
 
 - Detect ingredients from a **photo** uploaded by the user.
-- (Future extension) Recommend recipes based on detected ingredients using an LLM.
+- Recommend recipes based on detected ingredients using an LLM.
 
 Built with:
 - **FastAPI** backend.
@@ -95,21 +95,6 @@ python training/log_saved_model.py
 
 - ✅ Manually logs and registers the model into the MLflow Model Registry.
 
-### 6. Start the FastAPI Server
-
-```bash
-uvicorn app.main:app --reload
-```
-
-Visit the application at: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-
-- ✅ Upload a food image.
-- ✅ View detected ingredients.
-
----
-
-
-Here’s a sample `README.md` that explains exactly how to set up and run your Vertex AI + Gemini script using a service account:
 
 ---
 
@@ -135,7 +120,7 @@ This project uses Google Cloud's Vertex AI Gemini API to generate Michelin-level
    - Go to [Google Cloud Console – IAM & Admin > Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts)
    - Create or select a service account.
    - Grant it the **Vertex AI User** role.
-   - Click **“Create Key”** → Select **JSON** → Download the file.
+   - Click three dots next to the account -> manage keys -> Add Key -> **“Create New Key”** → Select **JSON** → Download the file.
    - Save it somewhere safe on your local machine.
 
 ---
@@ -170,6 +155,18 @@ This project uses Google Cloud's Vertex AI Gemini API to generate Michelin-level
 - Ensure the Gemini model you’re calling (`gemini-2.0-flash-001`) is available in your selected region
 
 ---
+
+
+### 6. Start the FastAPI Server
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Visit the application at: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+- ✅ Upload a food image.
+- ✅ View detected ingredients.
 
 
 ## 🧠 Key Features
