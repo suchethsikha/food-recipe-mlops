@@ -1,22 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Food Ingredient Detector</title>
+    <meta charset="utf-8">
+    <title>Food Ingredient Detector & Recipe Recommender</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Upload a Food Image</h1>
-    <form action="/predict" enctype="multipart/form-data" method="post">
-        <input name="file" type="file">
-        <input type="submit" value="Predict">
-    </form>
+    <h1>Food Ingredient Detector & Recipe Recommender</h1> 
+
+   
+    <form id="upload-form" action="/predict" enctype="multipart/form-data" method="post">
+        <label for="file-upload" class="custom-file-upload">Choose Images</label>
+        <input id="file-upload" name="files" type="file" accept="image/*" multiple required>
+        <input type="submit" value="Detect Ingredients">
+    </form> 
+
+    
 
     {% if predictions %}
-    <h2>Predictions:</h2>
-    <ul>
+    <h2>Detected Ingredients:</h2>
+    <ul id="prediction-list">
         {% for label, confidence in predictions %}
-            <li>{{ label }} ({{ '{:.2f}'.format(confidence * 100) }}% confidence)</li>
+            <li>{{ label }} ({{ (confidence * 100)|round(2) }}% confidence)</li>
         {% endfor %}
     </ul>
+
+    <script>
+    window.lastIngredients = [
+        {% for label, confidence in predictions %}
+            "{{ label }}"{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+    </script>
+    <button id="recommend">Get Recipes</button>
+    <span id="loading" style="display:none; margin-left:1em;">Loading…</span>
     {% endif %}
+
+    <h2>Recipes</h2>
+    <div id="recipes"></div>
+
+    <script>
+    const btn = document.getElementById('recommend');
+    const loader = document.getElementById('loading');
+    const container = document.getElementById('recipes');
+
+    btn?.addEventListener('click', async () => {
+        const ings = window.lastIngredients || [];
+        if (!ings.length) {
+            alert('Please detect ingredients first!');
+            return;
+        }
+
+        loader.style.display = 'inline';
+        btn.disabled = true;
+        container.innerHTML = '';
+
+        try {
+            const res = await fetch('/recommend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(ings)
+            });
+            if (!res.ok) throw new Error(`Status ${res.status}`);
+            const { recipes } = await res.json();
+
+            if (!recipes || recipes.length === 0) {
+                container.textContent = 'No recipes found.';
+            } else {
+                const table = document.createElement('table');
+                table.classList.add('recipe-table');
+                table.innerHTML = `
+                  <thead>
+                    <tr>
+                      <th>Name</th><th>Ingredients</th><th>Steps</th><th>Time (min)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${recipes.map(r => `
+                      <tr>
+                        <td>${r.name}</td>
+                        <td><ul>${r.ingredients.map(i => `<li>${i}</li>`).join('')}</ul></td>
+                        <td><ol>${r.steps.map(s => `<li>${s}</li>`).join('')}</ol></td>
+                        <td>${r.time_minutes}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>`;
+                container.appendChild(table);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Failed to fetch recipes. See console for details.');
+        } finally {
+            loader.style.display = 'none';
+            btn.disabled = false;
+        }
+    });
+    </script>
 </body>
-</html>
+</html> 
