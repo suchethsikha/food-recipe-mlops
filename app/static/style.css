@@ -1,0 +1,268 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #FFFFF0;
+    margin: 0;
+    padding: 2rem;
+    color: black;
+}
+
+h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.5rem;
+    color: #2c7a4b;
+    margin-bottom: 1.5rem;
+    font-weight: 700; 
+    letter-spacing: 0.05em;
+    line-height: 1.2;                      
+}
+
+/* Style for the title icon */
+.title-icon {
+  width: 80px;              /* adjust to whatever size you like */
+  height: 80px;
+  object-fit: contain;
+  vertical-align: middle;   /* keeps it aligned with the text */
+  margin-right: 0.3rem;     /* a bit of breathing room */
+}
+
+h2 {
+    font-size: 1.75rem; 
+    color: #3498db;
+    margin-top: 2rem;
+}
+
+form#upload-form {
+    margin-bottom: 2rem;
+}
+
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 0.6em 1.2em;
+    background-color: #9b59b6;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-right: 1em;
+    transition: background 0.3s ease;
+}
+
+.custom-file-upload:hover {
+    background-color: #8e44ad;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+input[type="submit"],
+button#recommend {
+    background-color: #e67e22;
+    color: white;
+    border: none;
+    padding: 0.6em 1.2em;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+/* 1) Style the Detect button just like the Upload button */
+#detectBtn {
+  display: inline-block;
+  padding: 0.6em 1.2em;
+  background-color: #9b596;       /* same purple */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+#detectBtn:hover {
+  background-color: #8e44ad;       /* same hover as Upload */
+}
+
+/* 2) Lay out Cuisine & Spiciness side by side */
+.options-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* 3) Stack label above control in each column */
+.options-section .option {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ——————————————————————————————————————————————
+   Make Cuisine & Spiciness each occupy half the width
+   —————————————————————————————————————————————— */
+/* 4) Keep Cuisine at a fixed width */
+.options-section .option:first-child {
+  flex: 0 0 500px;    /* your desired fixed width */
+}
+
+/* 5) Let Spiciness fill the remaining space */
+.options-section .option:last-child {
+  flex: 1;            /* grow to use all leftover width */
+}
+
+/* 6) Add spacing under each label */
+.options-section .option label {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600; 
+}
+
+/* 7) Ensure dropdown & slider go full-width of their column */
+.options-section select,
+.options-section input[type="range"] {
+  width: 100%;
+}
+
+
+/* Ensure the controls fill their column */
+#cuisineSelect,
+#spiceRange {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+
+/* 3) Enlarge the Detected Ingredients header */
+#detected h4 {
+  font-size: 1.75rem;               /* bump up the size */
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* give the ingredient list a soft border & padding */
+#ingredientList {
+  border: 2px dashed #aaa;
+  border-radius: 6px;
+  padding: 1rem;
+  background: #fff;
+}
+
+/* each item bigger & darker */
+#ingredientList .list-group-item {
+  font-size: 1.2rem;
+  color: #34495e;
+  margin-bottom: 0.5rem;
+}
+
+/* the “+” button with a circular background */
+#ingredientList .btn-outline-secondary {
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+}
+
+input[type="submit"]:hover,
+button#recommend:hover {
+    background-color: #d35400;
+}
+
+#loading {
+    font-style: italic;
+    color: #666;
+    margin-left: 1em;
+}
+
+ul#prediction-list {
+    list-style: circle inside;
+    color: #2c3e50;
+    font-size: 1.1rem;
+    margin: 1rem 0;
+}
+
+#cuisineSelect {
+  font-size: 1.75rem;      
+  padding: 0.5rem 0.75rem;
+  border-radius: 3px 
+}
+
+label[for="cuisineSelect"] {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+#spiceRange {
+  width: 50%;
+  height: 1.5rem;          /* taller slider track */
+  margin-top: 0.25rem;
+}
+
+label[for="spiceRange"] {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+#spiceValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-left: 0.25rem;
+}
+
+hr.my-4 {
+  border: none;
+  height: 2px;
+  background: #ccc;
+  margin: 2rem 0.5;
+}
+
+table.recipe-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5em;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+table.recipe-table th {
+    background-color: #3498db;
+    color: white;
+    padding: 0.75em;
+    text-align: left;
+    font-weight: 600;
+}
+
+table.recipe-table td {
+    border: 1px solid #ddd;
+    padding: 0.75em;
+    vertical-align: top;
+}
+
+table.recipe-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+ul, ol {
+    padding-left: 1.2rem;
+    margin: 0;
+}
+
+/* Shrink the Cuisine dropdown’s height and font size */
+#cuisineSelect {
+  /* force a smaller height */
+  height: 2rem !important;
+  /* less internal padding */
+  padding: 0.5rem 0.75rem !important;
+  /* slightly smaller text */
+  font-size: 1rem !important;
+  /* single line */
+  line-height: 1 !important;
+  /* make sure it still fills its 150px container */
+  width: 100% !important;
+}
+
+/* Tweak the label above it, if you want less gap */
+.options-section .option:first-child label {
+  margin-bottom: 0.25rem !important;
+  font-size: 1rem;  /* or shrink this if you like */
+}
