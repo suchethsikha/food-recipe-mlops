@@ -17,12 +17,26 @@ _client = genai.Client(
     http_options=HttpOptions(api_version="v1")
 )
 
-def generate_recipes(detected: list[str]) -> dict:
+def generate_recipes(detected: list[str],
+    cuisine: str,
+    spiciness: int) -> dict:
     prompt = (
-        "You are a Michelin-level chef.\n"
+        "You are a skilled home cook who makes simple, approachable dishes. "
+        f"{cuisine} cuisine.\n"
         f"Ingredients: {', '.join(detected)}\n"
-        "Suggest 3 recipes as JSON: "
-        "{'recipes':[{'name':..., 'ingredients':[...], 'steps':[...], 'time_minutes':int}]}"
+        f"Spiciness level: {spiciness}/10\n\n"
+        "Please suggest exactly 3 recipes and return as a JSON object with this schema:\n"
+        "{\n"
+        '  "recipes": [\n'
+        "    {\n"
+        '      "name": "…",\n'
+        '      "ingredients": ["…", "…"],\n'
+        '      "steps": ["…", "…"],\n'
+        '      "time_minutes": 30\n'
+        "    },\n"
+        "    …\n"
+        "  ]\n"
+        "}"
     )
 
     logging.info("LLM prompt: %s", prompt)
