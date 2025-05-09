@@ -10,10 +10,10 @@ from app.model_loader import model
 def predict_image(file_bytes: bytes):
     # Load image from bytes
     img = Image.open(io.BytesIO(file_bytes)).convert("RGB")
-    
+
     # Run prediction
     results = model.predict(img, conf=0.25)
-    
+
     # Extract predicted labels
     predictions = []
     for r in results:

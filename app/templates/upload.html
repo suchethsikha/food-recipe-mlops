@@ -1,22 +1,233 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Food Ingredient Detector</title>
+  <meta charset="UTF-8" />
+  <title>Food Ingredient Detector & Recipe Recommender</title>
+  <! -- 1) Bootstrap from the CDN -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  /> 
+
+  <!-- 2) Your custom overrides -->
+  <link
+    rel="stylesheet"
+    href="/static/style.css"
+  />
+ 
+  <link
+   href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+   rel="stylesheet"
+  />
+
 </head>
 <body>
-    <h1>Upload a Food Image</h1>
-    <form action="/predict" enctype="multipart/form-data" method="post">
-        <input name="file" type="file">
-        <input type="submit" value="Predict">
-    </form>
+  <div class="container py-5">
+    <h1 class="mb-4 text-success">
+    <img src="/static/images/chef-icon.png"
+       alt="Chef"
+       class="title-icon" />
+    Food Ingredient Detector &amp; Recipe Recommender</h1>
 
-    {% if predictions %}
-    <h2>Predictions:</h2>
-    <ul>
-        {% for label, confidence in predictions %}
-            <li>{{ label }} ({{ '{:.2f}'.format(confidence * 100) }}% confidence)</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+    <!-- 1) Select & Detect Ingredient Images -->
+    <div class="mb-4">
+      <!-- hidden file input -->
+      <input
+        id="imageInput"
+        type="file"
+        name="files"
+        multiple
+        accept="image/*"
+        style="display: none;"
+      />
+      <!-- visible label styled as your upload button -->
+      <label for="imageInput" class="custom-file-upload">
+        📁 Upload Images
+      </label>
+      <!-- your existing Detect button -->
+      <button id="detectBtn" class="btn btn-warning ms-2">
+        🔍 Detect Ingredients
+      </button>	
+        </div>
+
+    <!-- 2) Show Detected Ingredients with "+" to add more -->
+    <div id="detected" class="mb-4">
+      <h4>Detected Ingredients:</h4>
+      <ul id="ingredientList" class="list-group mb-3"></ul>
+    </div>
+
+    <!-- 3) Cuisine & Spiciness -->
+    <div class="options-section">
+      <div class="option">
+        <label for="cuisineSelect" class="form-label">Cuisine</label>
+        <select id="cuisineSelect" class="form-select">
+          <option>Indian</option>
+          <option>Chinese</option>
+          <option>Brazilian</option>
+          <option>Mexican</option>
+          <option>Mediterranean</option>
+        </select>
+      </div>
+      <div class="option">
+        <label for="spiceRange">
+          Spiciness: <span id="spiceValue">5</span>/10
+        </label>
+        <input id="spiceRange" type="range"  min="0" max="10" value="5" />
+      </div>
+    </div>
+
+    <hr class="my-4"/>
+    <!-- 4) Get Recipes -->
+    <button id="getRecipesBtn" class="btn btn-primary">Get Recipes</button>
+    <div id="loader" class="spinner-border text-primary ms-3 d-none" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+
+    <!-- 5) Recipes Table -->
+    <div id="recipes" class="mt-5" style="display: none;">
+      <h3>Recipes</h3>
+      <div class="table-responsive">
+        <table class="table table-striped recipe-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Ingredients</th>
+              <th>Steps</th>
+              <th>Time (min)</th>
+            </tr>
+          </thead>
+          <tbody id="recipeBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap & JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const imageInput     = document.getElementById('imageInput');
+    const detectBtn      = document.getElementById('detectBtn');
+    const ingredientList = document.getElementById('ingredientList');
+    const cuisineSelect  = document.getElementById('cuisineSelect');
+    const spiceRange     = document.getElementById('spiceRange');
+    const spiceValue     = document.getElementById('spiceValue');
+    const getRecipesBtn  = document.getElementById('getRecipesBtn');
+    const loader         = document.getElementById('loader');
+    const recipesDiv     = document.getElementById('recipes');
+    const recipeBody     = document.getElementById('recipeBody');
+
+    //  Update spiciness label
+    spiceRange.addEventListener('input', e => {
+      spiceValue.textContent = e.target.value;
+    });
+
+    // Helper: send one image to /predict, return array of ingredient names
+    async function detectFile(file) {
+      const form = new FormData();
+      form.append('files', file);
+      form.append('ajax', 'true');
+      const res = await fetch('/predict', { method: 'POST', body: form });
+      const json = await res.json();
+      return json.ingredients || [];
+    }
+
+    // Renders one ingredient line with "+" button to upload another pic
+    function renderIngredient(name) {
+      const li = document.createElement('li');
+      li.className = 'list-group-item d-flex align-items-center justify-content-between ingredient-item';
+
+      // ingredient text
+      const span = document.createElement('span');
+      span.textContent = name;
+      li.appendChild(span);
+
+      // hidden file input
+      const fileInput = document.createElement('input');
+      fileInput.type      = 'file';
+      fileInput.accept    = 'image/*';
+      fileInput.capture   = 'environment';
+      fileInput.style.display = 'none';
+      fileInput.addEventListener('change', async () => {
+        const newFile = fileInput.files[0];
+        if (!newFile) return;
+        const more = await detectFile(newFile);
+        more.forEach(renderIngredient);
+      });
+      li.appendChild(fileInput);
+
+      // plus button
+      const btn = document.createElement('button');
+      btn.type      = 'button';
+      btn.className = 'btn btn-sm btn-outline-secondary ms-2';
+      btn.textContent = '+';
+      btn.title     = 'Add another ingredient photo';
+      btn.addEventListener('click', () => fileInput.click());
+      li.appendChild(btn);
+
+      ingredientList.appendChild(li);
+    }
+
+    // 1) Detect on all selected files
+    detectBtn.addEventListener('click', async () => {
+      ingredientList.innerHTML = '';
+      const files = Array.from(imageInput.files);
+      if (!files.length) {
+        alert('Please select at least one image.');
+        return;
+      }
+      for (let f of files) {
+        const names = await detectFile(f);
+        names.forEach(renderIngredient);
+      }
+    });
+
+    // 2) Get recipes from all gathered ingredients
+    getRecipesBtn.addEventListener('click', async () => {
+      const ingredients = Array.from(
+        ingredientList.querySelectorAll('li span')
+      ).map(s => s.textContent);
+
+      if (!ingredients.length) {
+        alert('No ingredients to cook!');
+        return;
+      }
+
+      getRecipesBtn.disabled = true;
+      loader.classList.remove('d-none');
+      // loader.style.display    = 'inline-block';
+      recipesDiv.style.display= 'none';
+
+      try {
+        const res = await fetch('/recommend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ingredients,
+            cuisine: cuisineSelect.value,
+            spiciness: parseInt(spiceRange.value, 10)
+          })
+        });
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        const { recipes } = await res.json();
+
+        recipeBody.innerHTML = recipes.map(r => `
+          <tr>
+            <td>${r.name}</td>
+            <td><ul>${r.ingredients.map(i=>`<li>${i}</li>`).join('')}</ul></td>
+            <td><ol>${r.steps.map(s=>`<li>${s}</li>`).join('')}</ol></td>
+            <td>${r.time_minutes}</td>
+          </tr>
+        `).join('');
+        recipesDiv.style.display = 'block';
+      } catch (err) {
+        console.error(err);
+        alert('Failed to fetch recipes.');
+      } finally {
+        //  loader.style.display    = 'none';
+        loader.classList.add('d-none');
+        getRecipesBtn.disabled  = false;
+      }
+    });
+  </script>
 </body>
 </html>
