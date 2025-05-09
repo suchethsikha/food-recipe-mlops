@@ -134,17 +134,6 @@ Visit the application at: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 ---
 
-## 🔥 Stuff to do / Task list
-
-- Add a LLM either just to generate recipies/ to act as a chatbot.
-- Check and update model to perfect inferences -- local 
-- Run with ML flow running in GCP to track model training. Already have a sample ML Flow server running in GCP, will need to change URI. Quick win.
-- Check how to host the entire infrastructure since it's all local, do we move it to GCP, metaflow etc.
-- Currently the dataset is from RoboFlow.
-- Training.py is updated but not logged properly in ML . 2 epochs take around 8 hours to run, will have to rerun sometime overnight.
-
----
-
 ## 📚 References
 
 - [YOLOv8 Documentation](https://docs.ultralytics.com/)
